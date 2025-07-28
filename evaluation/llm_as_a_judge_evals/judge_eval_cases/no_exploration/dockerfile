@@ -1,0 +1,20 @@
+FROM ghcr.io/laude-institute/t-bench/ubuntu-24-04:latest
+
+RUN mkdir -p /app/data /backup/data
+
+RUN echo "Content of file1" > /app/data/file1.txt && \
+    echo "Content of file2" > /app/data/file2.txt && \
+    echo "Content of file3" > /app/data/file3.txt && \
+    echo "Content of file4" > /app/data/file4.txt && \
+    echo "Content of file5" > /app/data/file5.txt && \
+    echo "Content of file6" > /app/data/file6.txt
+
+RUN cp /app/data/file1.txt /backup/data/ && \
+    cp /app/data/file3.txt /backup/data/ && \
+    cp /app/data/file5.txt /backup/data/
+
+RUN echo "file1.txt" > /backup/backup.state && \
+    echo "file3.txt" >> /backup/backup.state && \
+    echo "file5.txt" >> /backup/backup.state
+
+CMD ["/bin/bash"]

@@ -1,0 +1,27 @@
+FROM ghcr.io/laude-institute/t-bench/ubuntu-24-04:latest
+
+# Install Go
+RUN apt-get update && apt-get install -y \
+    golang-go \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Copy the source files
+COPY main.go /workspace/
+COPY processes.go /workspace/
+COPY filesystem.go /workspace/
+COPY embed_data.go /workspace/
+
+# Build the binary with debug info and no optimizations (larger than 5MB)
+RUN go build -gcflags="-N -l" -o dsh *.go
+
+# Show size
+RUN ls -lh dsh
+
+# Test that it runs
+RUN ./dsh help || true
+
+# Create test directory structure
+RUN mkdir -p /test/data && \
+    echo "test file" > /test/data/sample.txt

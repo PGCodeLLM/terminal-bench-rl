@@ -1,0 +1,21 @@
+FROM ghcr.io/laude-institute/t-bench/python-3-13:20250620
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install flask feedparser requests pydub
+
+# Copy the broken application files
+COPY app.py /app/
+COPY test_feed.xml /app/
+COPY generate_mp3.py /app/
+
+# Generate the sample MP3 file
+RUN python generate_mp3.py && rm generate_mp3.py
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]

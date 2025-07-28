@@ -1,0 +1,3 @@
+[submodule "external/rllm"]
+	path = external/rllm
+	url = https://github.com/agentica-project/rllm.git

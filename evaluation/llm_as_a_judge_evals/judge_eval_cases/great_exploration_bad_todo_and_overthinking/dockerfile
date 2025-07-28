@@ -1,0 +1,54 @@
+FROM ghcr.io/laude-institute/t-bench/ubuntu-24-04:latest
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    ca-certificates \
+    python3 \
+    python3-pip \
+    python3-pytest \
+    python3-yaml \
+    iptables \
+    iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3 the default python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Download k3s binary directly
+RUN curl -L https://github.com/k3s-io/k3s/releases/download/v1.28.2%2Bk3s1/k3s -o /usr/local/bin/k3s && \
+    chmod +x /usr/local/bin/k3s
+
+# Create necessary directories
+RUN mkdir -p /var/lib/rancher/k3s/server/manifests /etc/rancher/k3s
+
+ENV KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+ENV PATH="${PATH}:/usr/local/bin"
+
+WORKDIR /workspace
+
+# Copy all manifest files
+COPY namespaces.yaml /k8s-manifests/
+COPY api-gateway.yaml /k8s-manifests/
+COPY user-service.yaml /k8s-manifests/
+COPY auth-service.yaml /k8s-manifests/
+COPY order-service.yaml /k8s-manifests/
+COPY inventory-service.yaml /k8s-manifests/
+COPY payment-service.yaml /k8s-manifests/
+COPY notification-service.yaml /k8s-manifests/
+COPY analytics-service.yaml /k8s-manifests/
+COPY infrastructure.yaml /k8s-manifests/
+COPY network-policies.yaml /k8s-manifests/
+COPY setup-k8s.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/setup-k8s.sh
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+k3s server --disable traefik --disable servicelb &\n\
+sleep 30\n\
+setup-k8s.sh\n\
+tail -f /dev/null' > /usr/local/bin/start.sh && \
+chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]

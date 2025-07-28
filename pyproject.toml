@@ -1,0 +1,36 @@
+[project]
+name = "terminal-bench-rl"
+version = "0.1.0"
+description = "Reinforcement Learning Training System for Terminal-Based AI Agents"
+readme = "README.md"
+requires-python = "==3.12.9"
+dependencies = [
+    "terminal-bench",
+    "litellm>=1.72.6",
+    "pyyaml>=6.0.2",
+    "pydantic>=2.11.5",
+    "transformers>=4.51.3",
+    "cryptography>=45.0.5",
+    "pyjwt>=2.10.1",
+]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.uv]
+override-dependencies = [
+]
+
+[tool.uv.sources]
+terminal-bench-rl = { workspace = true }
+terminal-bench = { git = "https://github.com/Danau5tin/terminal-bench-py311.git", branch = "main" }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.1",
+    "terminal-bench-rl",
+]

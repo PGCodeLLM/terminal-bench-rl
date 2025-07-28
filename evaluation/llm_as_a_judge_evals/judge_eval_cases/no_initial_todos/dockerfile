@@ -1,0 +1,18 @@
+FROM ghcr.io/laude-institute/t-bench/ubuntu-24-04:latest
+
+RUN apt-get update && apt-get install -y \
+    golang-go \
+    build-essential \
+    strace \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY container.go /workspace/
+COPY test_runtime.sh /workspace/
+
+RUN chmod +x test_runtime.sh
+
+RUN go build -o container container.go
+
+CMD ["/bin/bash"]

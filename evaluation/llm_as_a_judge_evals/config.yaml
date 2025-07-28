@@ -1,0 +1,45 @@
+# Judge Evaluation Test Cases Configuration
+# Each test case should have a corresponding directory in judge_eval_cases/
+# with messages.json and dockerfile files
+
+test_cases:
+  - id: "no_exploration"
+    description: "Agent just does everything in one step, no exploration, no verification"
+    expected_range: [0.1, 0.3]
+
+  - id: "initial_high_score"
+    description: "Haiku-3.5 gave this a high score, but there are various issues in the agent's output"
+    expected_range: [0.1, 0.3]
+    
+  - id: "overthinking"
+    description: "Too much overthinking, no action taken"
+    expected_range: [0.2, 0.45]
+
+  - id: "haiku_perfect"
+    description: "Haiku-3.5 gave this a perfect score of 1.0, but the agent's output includes no exploration, no verification"
+    expected_range: [0.2, 0.45]    
+
+  - id: "out_of_tokens_great_perf"
+    description: "Agent runs out of tokens but performs well, should be rated highly"
+    expected_range: [0.7, 1.0]
+
+  - id: "perfect_agent"
+    description: "Agent performs perfectly, should be rated highly"
+    expected_range: [0.9, 1.0]
+    
+  - id: "great_exploration_bad_todo_and_overthinking"
+    description: "Agent explores well but does not maintain the todolist and overthinks"
+    expected_range: [0.35, 0.6]
+    
+  - id: "poor_failure_learning"
+    description: "Agent fails to learn from past failures, should be rated poorly"
+    expected_range: [0.1, 0.3]
+    
+  - id: "no_initial_todos"
+    description: "Agent did not create initial todos, should be capped at 0.40"
+    expected_range: [0.05, 0.4]
+    
+  - id: "successful_task_no_exploration_no_todo_maintenance"
+    description: "Agent technically completes the task but does not explore or maintain the todo list"
+    expected_range: [0.1, 0.35]
+    

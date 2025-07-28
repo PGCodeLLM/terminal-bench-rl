@@ -1,0 +1,25 @@
+FROM ghcr.io/laude-institute/t-bench/python-3-13:20250620
+
+# Use Python 3.11 from the base image instead of 3.9
+RUN apt-get update && apt-get install -y python3.11-venv && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy project structure files
+COPY src/ /app/src/
+COPY tests/ /app/tests/
+COPY local-packages/ /app/local-packages/
+COPY requirements.txt /app/requirements.txt
+COPY setup_corrupted_venv.py /app/setup_corrupted_venv.py
+
+# Set up the corrupted venv
+RUN python3.11 -m venv /app/venv && \
+    /app/venv/bin/pip install --upgrade pip && \
+    python3.11 /app/setup_corrupted_venv.py && \
+    rm /app/setup_corrupted_venv.py
+
+# Install pytest globally for testing
+RUN pip install pytest
+
+WORKDIR /app
