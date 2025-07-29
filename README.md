@@ -69,7 +69,11 @@ Note: I did not expect the 8B to begin learning the complex behaviours required 
 ## 🏆 Placing a spot on the Terminal Bench Leaderboard
 [Terminal bench](https://www.tbench.ai/) is a brilliant benchmark created by Stanford and [Laude Institute](https://www.laude.org/) to quantify agents' ability to complete complex tasks in the terminal.
 
-Through prompt engineering & custom tool design, my Qwen3-32B agent outperformed Stanford's Terminus-Qwen3-235B-30A MoE agent, as well as Deepseek R1 & OpenAI's GPT-4.1 with Codex agent, to become the highest scoring Qwen3 agent on the leaderboard. I am sure that with the compute budget for training, my agent would climb the leaderboard significantly.
+Through prompt engineering & custom tool design, my Qwen3-32B agent outperformed Stanford's Terminus-Qwen3-235B-30A MoE agent, as well as Deepseek R1 & OpenAI's GPT-4.1 with Codex agent, to become the highest scoring Qwen3 agent on the leaderboard. 
+
+The results.json for the eval run can be found [here](./tbench_eval_run_results.json).
+
+I am sure that with the compute budget for training, my agent would climb the leaderboard significantly. 
 
 ### Agent details
 
@@ -357,7 +361,7 @@ That's it! UV will handle all dependencies automatically.
 > **Note**: This project includes a forked version of the terminal-bench repository with the Python version requirement reduced from 3.13 to 3.12 for compatibility.
 
 ### Terminal Bench Evaluation Reproduction
-After setup, you can reproduce my Terminal Bench evaluation results:
+After setup, you can reproduce my Terminal Bench evaluation [result](./tbench_eval_run_results.jsons:
 ```bash
 # Set environment variables, example:
 export LITE_LLM_API_KEY="your_huggingface_token"
