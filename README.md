@@ -5,7 +5,7 @@
 - In doing so, I developed Terminal-Agent-Qwen3-32b to become the **highest scoring Qwen3 agent on [terminal-bench](https://github.com/laude-institute/terminal-bench)**. WITHOUT training! (currently under submission):
     - Unfortunately I am too GPU poor to train a SOTA coding agent 😅 (estimated £30k-£50k in compute required), but if anyone has the GPUs, this project should get you there!
 
-This project builds upon the [rLLM framework](https://github.com/agentica-project/rllm) developed by UC Berkeley Sky Lab, extending it with custom environments and infrastructure specifically designed for terminal-based agent training.
+This project builds upon the [rLLM framework](https://github.com/rllm-org/rllm) developed by UC Berkeley Sky Lab, extending it with custom environments and infrastructure specifically designed for terminal-based agent training.
 
 ## 📚 Table of Contents
 
@@ -213,7 +213,7 @@ python training_scripts/switch_judge_backend.py ccode
 
 ## 🏗️ rLLM Integration Architecture
 
-This project extends [rLLM](https://github.com/agentica-project/rllm)'s `BaseAgent` and `BaseEnv` interfaces to create a complete RL training loop:
+This project extends [rLLM](https://github.com/rllm-org/rllm)'s `BaseAgent` and `BaseEnv` interfaces to create a complete RL training loop:
 
 ### Terminal Agent (`TerminalBenchAgent`)
 - Extends rLLM's `BaseAgent` to manage multi-turn conversations between the environment and LLM
