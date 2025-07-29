@@ -2,8 +2,8 @@
 
 **TL;DR:** 
 - I successfully built stable RL training infrastructure that scales to 32x H100 GPUs across 4 bare metal nodes for training long-horizon terminal-based coding agents.
-- In doing so, I developed Terminal-Agent-Qwen3-32b to become the **highest scoring Qwen3 agent on [terminal-bench](https://github.com/laude-institute/terminal-bench)**. WITHOUT training!:
-    - Unfortunately I am too GPU poor to train a SOTA coding agent 😅 (£30k-£50k in compute required), but if anyone has the GPUs, this project should get you there!
+- In doing so, I developed Terminal-Agent-Qwen3-32b to become the **highest scoring Qwen3 agent on [terminal-bench](https://github.com/laude-institute/terminal-bench)**. WITHOUT training! (currently under submission):
+    - Unfortunately I am too GPU poor to train a SOTA coding agent 😅 (estimated £30k-£50k in compute required), but if anyone has the GPUs, this project should get you there!
 
 This project builds upon the [rLLM framework](https://github.com/agentica-project/rllm) developed by UC Berkeley Sky Lab, extending it with custom environments and infrastructure specifically designed for terminal-based agent training.
 
@@ -67,11 +67,13 @@ My longest training run was using 2xA100s on a single VM instance, where I train
 Note: I did not expect the 8B to begin learning the complex behaviours required to solve the tasks in the dataset. However it was great to run the training through the dataset and ensure the code is stable.
 
 ## 🏆 Placing a spot on the Terminal Bench Leaderboard
-[Terminal bench](https://www.tbench.ai/) is a benchmark created by Stanford and [Laude Institute](https://www.laude.org/) to quantify agents' ability to complete complex tasks in the terminal.
+[Terminal bench](https://www.tbench.ai/) is a brilliant benchmark created by Stanford and [Laude Institute](https://www.laude.org/) to quantify agents' ability to complete complex tasks in the terminal.
 
 Through prompt engineering & custom tool design, my Qwen3-32B agent outperformed Stanford's Terminus-Qwen3-235B-30A MoE agent, as well as Deepseek R1 & OpenAI's GPT-4.1 with Codex agent, to become the highest scoring Qwen3 agent on the leaderboard. I am sure that with the compute budget for training, my agent would climb the leaderboard significantly.
 
-My motivation behind this entire project was to place on the leaderboard of terminal bench by using RL to train a sophisticated LLM agent. In order to do so, I developed the tools (inspired by Claude Code) which a capable AI agent would use to help complete its task, as well as a system message which encouraged the agent to use those tools and approach the task in a specific way.
+### Agent details
+
+My motivation behind this entire project was to place on the leaderboard of terminal bench by using RL to train a sophisticated LLM agent. In order to do so, I developed the tools (inspired by Claude Code) which a capable AI agent would use to help complete complex terminal/coding tasks, as well as a [system message](./src/agent_core/system_prompt.md) which encouraged the agent to use those tools and approach the task in a specific way.
 
 These tools can be found [here](./src/agent_core/env_components/) and include:
 - **📝 Todo Management**: Planning and tracking task progress
@@ -116,7 +118,7 @@ As well as developing these tools, I also wrote out a [system prompt](./src/agen
 - **Mandatory Todo Management**: Required initial planning and continuous task tracking
 - **Read-Only Exploration**: Gather information before making any changes
 
-With this system message & tool combination + a capable LLM (I chose Qwen3-32B), I was able to place 19th on the terminal bench leaderboard with a score of 13.75%. This outperformed:
+With this system message & tool combination + a capable LLM (I chose Qwen3-32B), I was able to place 19th on the terminal bench leaderboard (currently under submission) with a score of 13.75%. This outperformed:
 - Terminus agent with Qwen3-235B by Stanford
 - Terminus agent with Deepseek-R1 by Stanford
 - Codex agent with GPT-4.1 by OpenAI
@@ -130,6 +132,8 @@ I would be extremely excited to see where Qwen3-32B would be on the leaderboard 
 
 ## Training details
 
+**As mentioned above, the compute costs of a full training run on a 32B LLM for long horizon terminal/coding tasks are not accessible for me**, however the training code and dataset is ready to go and has been tested to train stably on hardware setups from 2x A100s all the way to 32x H100s.
+
 ### ⚖️ Reward Design
 
 To provide meaningful supervision during RL, rewards were computed using **two complementary methods**:
@@ -137,7 +141,7 @@ To provide meaningful supervision during RL, rewards were computed using **two c
 ### ✅ Answer Verification (65% weight)
 - Each training datapoint included Python unit tests to verify task completion
 - Tests were assigned individual weights to provide granular partial credit
-- Test execution ran in isolated Docker containers with configurable timeouts
+- Test execution ran in the isolated Docker container in which the agent completed its work
 - Weighted scoring: passed tests contributed their weight to the final test score
 
 ### 🤖 LLM-as-a-Judge (35% weight)
@@ -154,9 +158,9 @@ To provide meaningful supervision during RL, rewards were computed using **two c
 #### 🧪 Judge Evaluation System
 To ensure the LLM judge provided accurate and consistent scoring during RL training, I developed a simple [evaluation system](./evaluation/llm_as_a_judge_evals/):
 - Created test cases showing different agent trajectories
-- Tested 17 LLM models as judges including: Kimi K2, Qwen-3-Coder, Claude Sonnet 4, Claude Opus 4, Claude Haiku 3.5, OpenAi O3, GPT-4o, to compare scoring accuracy.
+- Tested multiple LLM models as judges including: Kimi K2, Qwen-3-Coder, Claude Sonnet 4, Claude Haiku 3.5, to compare scoring accuracy.
 - Found Claude Sonnet 4 provided the most consistent and accurate scoring, correctly identifying issues like lack of exploration and overthinking
-  - Unfortunately Sonnet-4 is extremely expensive, so it is not very affordable for a 32 rollout, 1650 step run! But it was the only model which understood a good from bad trajectory.
+  - Unfortunately Sonnet-4 is extremely expensive, so it is not very affordable for a 32 rollout, 1650 step run! But it was the only model which understood a good from bad trajectory well enough.
   - Many other models (including Haiku 3.5) gave inflated scores to problematic agent behaviors, with some scoring 0.85-0.95 for agents that skipped critical phases
 
 To analyze judge model performance:
@@ -178,7 +182,7 @@ uv run python evaluation/llm_as_a_judge_evals/report.py
 | 4 | Devstral Medium | 23.33% | 0.50 |
 | 5 | Kimi K2 | 23.33% | 0.53 |
 
-Claude Sonnet 4 ranks #1 despite having the same pass rate as Haiku because its significantly lower average score (0.26 vs 0.70) indicates stricter, more accurate judging. Lower scores mean the model better identifies problematic agent behaviors that other judges miss.
+Claude Sonnet 4 ranks #1 despite having the same pass rate as Haiku because its significantly lower average score (0.26 vs 0.70) indicates stricter, more accurate judging (on the [eval dataset](./evaluation/llm_as_a_judge_evals/config.yaml)). Lower scores mean the model better identifies problematic agent behaviors that other judges miss.
 
 Other models tested include: GPT-4.1, Gemma-3-27B-IT, Qwen3-32B, and Qwen3-235B-A22B.
 
