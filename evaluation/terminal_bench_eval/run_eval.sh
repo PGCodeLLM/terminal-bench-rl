@@ -9,5 +9,6 @@ export LITE_LLM_API_BASE="${LITE_LLM_API_BASE}"
 uv run tb run \
     --dataset-name terminal-bench-core \
     --dataset-version 0.1.1 \
-    --agent-import-path evaluation.terminal_agent:TerminalBenchAgent \
-    --n-concurrent-trials 4
+    --agent-import-path evaluation.terminal_bench_eval.terminal_agent:TerminalBenchAgent \
+    --n-concurrent-trials 4 \
+    --n-attempts 5
