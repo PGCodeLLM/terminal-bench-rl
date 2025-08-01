@@ -163,6 +163,9 @@ class ActionParserXMLYaml:
         # Enhanced error messages for common mistakes
         if tag_name == 'todo' and parsed_value:
             # Check for common single-action mistake
+            print("PARSED VALUE:")
+            print(parsed_value)
+            print(type(parsed_value))
             if 'action' in parsed_value and 'operations' not in parsed_value:
                 error_desc += "\n\nError: Todo actions must use the batch format with 'operations' list."
             # Check if they tried to use a string instead of list for operations

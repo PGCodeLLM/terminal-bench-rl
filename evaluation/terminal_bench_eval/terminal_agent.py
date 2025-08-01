@@ -3,6 +3,7 @@ import time
 import asyncio
 import logging
 import json
+import litellm
 from pathlib import Path
 from typing import List, Tuple
 from terminal_bench.agents.base_agent import BaseAgent, AgentResult
@@ -18,6 +19,7 @@ from src.agent_core.env_components.state_managers import TodoManager, Scratchpad
 from src.agent_core.env_components.action_handler import ActionHandler
 from src.agent_core.env_components.step_executor import StepExecutor, StepResult
 
+litellm.set_verbose = True
 
 logger = logging.getLogger(__name__)
 

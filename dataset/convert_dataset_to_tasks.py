@@ -99,7 +99,7 @@ def create_task_structure(row: Dict, output_dir: Path, dry_run: bool = False) ->
     
     # Build tb command
     cmd = [
-        'uv', 'run', 'tb', 'tasks', 'create', task_id,
+        'uv', 'run', '--active', 'tb', 'tasks', 'create', task_id,
         '--name', 'Dan Austin',
         '--email', 'dan@aituning.ai',
         '--category', row['category'],

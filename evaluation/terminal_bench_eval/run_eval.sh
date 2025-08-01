@@ -6,7 +6,11 @@ export LITELLM_TEMPERATURE="${LITELLM_TEMPERATURE:-0.1}"
 export LITE_LLM_API_KEY="${LITE_LLM_API_KEY}"
 export LITE_LLM_API_BASE="${LITE_LLM_API_BASE}"
 
-uv run tb run \
+echo $LITELLM_MODEL
+echo $LITE_LLM_API_KEY
+echo $LITE_LLM_API_BASE
+
+uv run --active tb run \
     --dataset-name terminal-bench-core \
     --dataset-version 0.1.1 \
     --agent-import-path evaluation.terminal_bench_eval.terminal_agent:TerminalBenchAgent \

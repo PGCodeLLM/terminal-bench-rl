@@ -67,6 +67,36 @@ COMMON_ENV_VARS = {
 
 # Configuration presets
 CONFIGS = {
+    "test_train": TrainingConfig(
+        name="test_train",
+        description="Test configuration with Qwen3-8B on 2x 80GB GPUS (A100/H100)",
+        env_vars={
+            **COMMON_ENV_VARS,
+            "HF_MODEL_NAME": "PGCodeLLM/Qwen-3-8B-Deepseek-SFT-Allthink",
+            "MODEL_PATH": "./models/PGCodeLLM_Qwen-3-8B-Deepseek-SFT-Allthink",
+            "PROJECT_NAME": "terminal_bench_test",
+            "EXPERIMENT_NAME": "qwen_3_8b_deepseek_sft_allthink_test",
+            "MAX_SEQUENCE_LENGTH": "8192",
+            "MAX_ROLLOUT_LENGTH": "4096",
+            "N_ROLLOUTS": "4",
+            "TRAIN_BATCH_SIZE": "2",
+            "PPO_MINI_BATCH_SIZE": "1",
+            "PPO_MICRO_BATCH_SIZE_PER_GPU": "1",
+            "N_GPUS_PER_NODE": "4",
+            "NNODES": "1",
+            "TP_SIZE": "4",
+            "ULYSSES_SEQUENCE_PARALLEL_SIZE": "1",
+            "ACTOR_LR": "1e-6",  # Standard learning rate
+            "MAX_STEPS": "30",
+            "TRAJECTORY_TIMEOUT": "300",
+            "LOG_LEVEL": "DEBUG",  # More verbose for testing
+            "NUM_EPOCHS": "1",  # Shorter for testing
+            "SAVE_FREQ": "10",
+            "REJECTION_SAMPLING_MULTIPLIER": "2", 
+            "VLLM_GPU_MEMORY_UTILIZATION": "0.7",
+        }
+    ),
+    
     "test_8b_2_gpus": TrainingConfig(
         name="test_8b_2_gpus",
         description="Test configuration with Qwen3-8B on 2x 80GB GPUS (A100/H100)",
